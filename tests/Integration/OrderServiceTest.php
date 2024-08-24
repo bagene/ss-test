@@ -86,7 +86,7 @@ final class OrderServiceTest extends TestCase
                 19208,
                 45,
             ],
-            'withDiscount' => [
+            'withFixedDiscount' => [
                 [
                     [
                         'product_name' => 'Product 1',
@@ -103,6 +103,26 @@ final class OrderServiceTest extends TestCase
                     ],
                 ],
                 19000,
+                45,
+            ],
+            'withPercentageDiscount' => [
+                [
+                    [
+                        'product_name' => 'Product 1',
+                        'quantity' => 1,
+                        'price' => 200,
+                        'currency' => 45,
+                        'discount' => 10,
+                        'discount_type' => 'percentage',
+                    ],
+                    [
+                        'product_name' => 'Product 2',
+                        'quantity' => 2,
+                        'price' => 50,
+                        'currency' => 45,
+                    ],
+                ],
+                28000,
                 45,
             ],
         ];

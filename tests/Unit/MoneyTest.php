@@ -143,6 +143,28 @@ final class MoneyTest extends TestCase
         $this->assertEquals(Currency::EUR, $result->getCurrency());
     }
 
+    public function testApplyDiscountFixed(): void
+    {
+        $money = Money::fromInt(100, Currency::EUR);
+        $discount = 10;
+
+        $result = $money->applyDiscount($discount);
+
+        $this->assertEquals(9000, $result->getAmount());
+        $this->assertEquals(Currency::EUR, $result->getCurrency());
+    }
+
+    public function testApplyDiscountPercentage(): void
+    {
+        $money = Money::fromInt(200, Currency::EUR);
+        $discount = 10;
+
+        $result = $money->applyDiscount($discount, Money::PERCENTAGE_DISCOUNT);
+
+        $this->assertEquals(18000, $result->getAmount());
+        $this->assertEquals(Currency::EUR, $result->getCurrency());
+    }
+
     public function testToString(): void
     {
             $money = Money::fromInt(100, Currency::EUR);

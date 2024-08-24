@@ -9,11 +9,46 @@ This is a test of the Money object. The Money object is a simple object that rep
     - Money.php
     - Conversion.php
     - MoneyCollection.php
+---
+
+### Lint and Test
+
+- `composer analyze`
+- `php artisan test`
+
+---
+### Test Endpoint
+
+- `POST /api/orders`
+
+```json
+{
+    "reference": "ORD-123",
+    "items": [
+        {
+            "name": "Item 1",
+            "price": 1.23,
+            "currency": 45,
+            "quantity": 2
+        },
+        {
+            "name": "Item 2",
+            "price": 4.56,
+            "currency": 45,
+            "quantity": 1
+        }
+    ],
+    "discount": 50,
+    "discount_type": "percentage",
+    "currency": 45
+}
+```
 
 ### Money Object
 
 The Money class uses minor units for value. This means that the value is stored as an integer and the decimal point is implied. For example, $1.23 would be stored as 123. This is done to avoid floating point rounding errors.
 
+&nbsp;
 #### Named Constructors
 
 To avoid issues with minor units when creating a Money object, named constructor are used instead of the normal constructor.
@@ -27,7 +62,7 @@ $money = Money::fromFloat(1.23, 'USD'); // $1.23 USD
 $money = Money::fromInt(1000, 'USD'); // $10.00 USD
 $money = Money::fromInt(1000, 'USD', false); // $1000.00 USD
 ```
-
+&nbsp;
 #### Getters
 
 * `getValue(): int` - Get the value of the Money object in minor units.
@@ -47,6 +82,7 @@ $value = $money->toString(); // $1.23
 ```
 * `getCurrency(): Currency` - Get the currency of the Money object.
 
+&nbsp;
 #### Operators
 
 These operators allow you to perform basic arithmetic operations on Money objects. Using it with multiple currencies automatically convert it to the primary currency before performing the operation.
@@ -90,16 +126,24 @@ $money1 = Money::fromFloat(1.23, 'USD');
 $money2 = Money::fromFloat(2, 'USD');
 $money3 = $money1->divideByMoney($money2); // $0.615 USD
 ```
+* `applyDiscount(int|float $discount, string $type = Money::FIXED_DISCOUNT): Money` - Apply a discount to the Money object.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$money = $money->applyDiscount(0.5, Money::PERCENTAGE_DISCOUNT); // $0.615 USD
+```
 
+---
 ### Money Collection
 
 The MoneyCollection class is a collection of Money objects. It has a method that allows you to average the values of all the Money objects in the collection.
 
+&nbsp;
 #### Getters
 
 * `getMoneys(): array` - Get the Money objects in the collection.
 * `count(): int` - Get the number of Money objects in the collection.
 
+&nbsp;
 #### Methods
 
 * `getLowest(): Money` - Get the Money object with the lowest value in the collection.

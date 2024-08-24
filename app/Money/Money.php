@@ -8,6 +8,9 @@ use App\Enums\Currency;
 
 final class Money
 {
+    public const FIXED_DISCOUNT = 'fixed';
+    public const PERCENTAGE_DISCOUNT = 'percentage';
+
     private function __construct(
         private int $amount = 0,
         private Currency $currency = Currency::EUR,
@@ -116,6 +119,20 @@ final class Money
             $this->currency,
             false,
         );
+    }
+
+    public function applyDiscount(int|float $discount, string $type = self::FIXED_DISCOUNT): Money
+    {
+        if ($type === self::FIXED_DISCOUNT) {
+            return $this->subtract(
+                Money::fromFloat(
+                    floatval($discount),
+                    $this->currency
+                ),
+            );
+        }
+
+        return $this->multiply(1 - ($discount / 100));
     }
 
     public function getAmount(): int

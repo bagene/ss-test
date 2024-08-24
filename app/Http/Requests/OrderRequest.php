@@ -30,6 +30,7 @@ class OrderRequest extends FormRequest
             'items.*.currency' => 'required|int',
             'items.*.discount' => 'numeric',
             'discount' => 'numeric',
+            'discount_type' => 'string',
             'currency' => 'required|int',
         ];
     }

@@ -18,9 +18,11 @@ final class OrderService
      *       quantity: int,
      *       price: float,
      *       currency: int,
-     *       discount?: float
+     *       discount?: float,
+     *       discount_type?: string
      *     }[],
      *     discount?: float,
+     *     discount_type?: string,
      *     currency: int
      * } $data
      */
@@ -30,7 +32,7 @@ final class OrderService
         $items = $data['items'];
 
         $total = $this->calculateItemsTotal($items, $mainCurrency)
-            ->subtract(Money::fromFloat($data['discount'] ?? 0, $mainCurrency));
+            ->applyDiscount($data['discount'] ?? 0, $data['discount_type'] ?? Money::FIXED_DISCOUNT);
 
         $order = new Order();
 
@@ -50,19 +52,18 @@ final class OrderService
      *        quantity: int,
      *        price: float,
      *        currency: int,
-     *        discount?: float
+     *        discount?: float,
+     *        discount_type?: string
      *      }[] $items
      */
     private function calculateItemsTotal(array $items, Currency $mainCurrency): Money
     {
         $total = Money::fromInt(0, $mainCurrency);
         foreach ($items as $item) {
-            $discount = Money::fromFloat($item['discount'] ?? 0, Currency::from($item['currency']))
-                ->convertTo($mainCurrency);
             $itemTotal = Money::fromFloat($item['price'], Currency::from($item['currency']))
                 ->convertTo($mainCurrency)
                 ->multiply($item['quantity'])
-                ->subtract($discount);
+                ->applyDiscount($item['discount'] ?? 0, $item['discount_type'] ?? Money::FIXED_DISCOUNT);
 
             $total = $total->add($itemTotal);
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Enums\Currency;
 use App\Service\OrderService;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -22,7 +23,7 @@ final class OrderServiceTest extends TestCase
     }
 
     #[DataProvider('provideData')]
-    public function testCreate(array $items, int $expectedTotal, int $mainCurrency): void
+    public function testCreate(array $items, int $expectedTotal, string $mainCurrency): void
     {
         $order = $this->service->create([
             'reference' => 'order-1',
@@ -32,7 +33,7 @@ final class OrderServiceTest extends TestCase
 
         $this->assertNotNull($order);
         $this->assertEquals($expectedTotal, $order->total);
-        $this->assertEquals($mainCurrency, $order->currency);
+        $this->assertEquals(Currency::fromName($mainCurrency)->value, $order->currency);
     }
 
     public static function provideData(): array
@@ -44,11 +45,11 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 1',
                         'quantity' => 1,
                         'price' => 100,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                 ],
                 10000,
-                45,
+                'EUR',
             ],
             'multipleProducts' => [
                 [
@@ -56,17 +57,17 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 1',
                         'quantity' => 1,
                         'price' => 100,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                     [
                         'product_name' => 'Product 2',
                         'quantity' => 2,
                         'price' => 50,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                 ],
                 20000,
-                45,
+                'EUR',
             ],
             'multipleProductsDifferentCurrencies' => [
                 [
@@ -74,17 +75,17 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 1',
                         'quantity' => 1,
                         'price' => 100,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                     [
                         'product_name' => 'Product 2',
                         'quantity' => 2,
                         'price' => 50,
-                        'currency' => 4,
+                        'currency' => 'AMD',
                     ],
                 ],
                 19208,
-                45,
+                'EUR',
             ],
             'withFixedDiscount' => [
                 [
@@ -92,18 +93,18 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 1',
                         'quantity' => 1,
                         'price' => 100,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                         'discount' => 10,
                     ],
                     [
                         'product_name' => 'Product 2',
                         'quantity' => 2,
                         'price' => 50,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                 ],
                 19000,
-                45,
+                'EUR',
             ],
             'withPercentageDiscount' => [
                 [
@@ -111,7 +112,7 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 1',
                         'quantity' => 1,
                         'price' => 200,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                         'discount' => 10,
                         'discount_type' => 'percentage',
                     ],
@@ -119,11 +120,11 @@ final class OrderServiceTest extends TestCase
                         'product_name' => 'Product 2',
                         'quantity' => 2,
                         'price' => 50,
-                        'currency' => 45,
+                        'currency' => 'EUR',
                     ],
                 ],
                 28000,
-                45,
+                'EUR',
             ],
         ];
     }

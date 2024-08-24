@@ -28,13 +28,13 @@ This is a test of the Money object. The Money object is a simple object that rep
         {
             "name": "Item 1",
             "price": 1.23,
-            "currency": 45,
+            "currency": "USD",
             "quantity": 2
         },
         {
             "name": "Item 2",
             "price": 4.56,
-            "currency": 45,
+            "currency": "USD",
             "quantity": 1
         }
     ],
@@ -55,29 +55,29 @@ To avoid issues with minor units when creating a Money object, named constructor
 
 * `Money::fromFloat(float $value, string $currency): Money` - Creates a Money object from a float value.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD); // $1.23 USD
+$money = Money::fromFloat(1.23, Currency::fromName('USD')); // $1.23 USD
 ```
 * `Money::fromInt(int $value, string $currency, bool $toMinorUnits = true): Money` - Creates a Money object from a int value. Automatically convert to minor units.
 ```php
-$money = Money::fromInt(1000, Currency::USD); // $10.00 USD
-$money = Money::fromInt(1000, Currency::USD, false); // $1000.00 USD
+$money = Money::fromInt(1000, Currency::fromName('USD')); // $10.00 USD
+$money = Money::fromInt(1000, Currency::fromName('USD'), false); // $1000.00 USD
 ```
 &nbsp;
 #### Getters
 
 * `getValue(): int` - Get the value of the Money object in minor units.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $value = $money->getValue(); // 123
 ```
 * `getFloatValue(): float` - Get the value of the Money object as a float.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $value = $money->getFloatValue(); // 1.23
 ```
 * `toString(): string` - Get the value of the Money object as a formatted string.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $value = $money->toString(); // $1.23
 ```
 * `getCurrency(): Currency` - Get the currency of the Money object.
@@ -94,41 +94,41 @@ $money = $money->convertTo('EUR'); // €1.00 EUR
 ```
 * `add(Money $money): Money` - Add two Money objects together.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(4.56, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(4.56, Currency::fromName('USD'));
 $money3 = $money1->add($money2); // $5.79 USD
 ```
 * `subtract(Money $money): Money` - Subtract one Money object from another.
 ```php
-$money1 = Money::fromFloat(5.79, Currency::USD);
-$money2 = Money::fromFloat(4.56, Currency::USD);
+$money1 = Money::fromFloat(5.79, Currency::fromName('USD'));
+$money2 = Money::fromFloat(4.56, Currency::fromName('USD'));
 $money3 = $money1->subtract($money2); // $1.23 USD
 ```
 * `multiply(float $value): Money` - Multiply the Money object by a float value.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $money = $money->multiply(2); // $2.46 USD
 ```
 * `multiplyByMoney(Money $money): Money` - Multiply the Money object by another Money object.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(2, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(2, Currency::fromName('USD'));
 $money3 = $money1->multiplyByMoney($money2); // $2.46 USD
 ```
 * `divide(float $value): Money` - Divide the Money object by a float value.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $money = $money->divide(2); // $0.615 USD
 ```
 * `divideByMoney(Money $money): Money` - Divide the Money object by another Money object.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(2, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(2, Currency::fromName('USD'));
 $money3 = $money1->divideByMoney($money2); // $0.615 USD
 ```
 * `applyDiscount(int|float $discount, string $type = Money::FIXED_DISCOUNT): Money` - Apply a discount to the Money object.
 ```php
-$money = Money::fromFloat(1.23, Currency::USD);
+$money = Money::fromFloat(1.23, Currency::fromName('USD'));
 $money = $money->applyDiscount(0.5, Money::PERCENTAGE_DISCOUNT); // $0.615 USD
 ```
 
@@ -148,25 +148,25 @@ The MoneyCollection class is a collection of Money objects. It has a method that
 
 * `getLowest(): Money` - Get the Money object with the lowest value in the collection.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(4.56, Currency::USD);
-$money3 = Money::fromFloat(7.89, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(4.56, Currency::fromName('USD'));
+$money3 = Money::fromFloat(7.89, Currency::fromName('USD'));
 $collection = MoneyCollection::from($money1, $money2, $money3);
 $money = $collection->getLowest(); // $1.23 USD
 ```
 * `getHighest(): Money` - Get the Money object with the highest value in the collection.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(4.56, Currency::USD);
-$money3 = Money::fromFloat(7.89, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(4.56, Currency::fromName('USD'));
+$money3 = Money::fromFloat(7.89, Currency::fromName('USD'));
 $collection = MoneyCollection::from($money1, $money2, $money3);
 $money = $collection->getHighest(); // $7.89 USD
 ```
 * `getAverage(): Money` - Get the average value of all the Money objects in the collection.
 ```php
-$money1 = Money::fromFloat(1.23, Currency::USD);
-$money2 = Money::fromFloat(4.56, Currency::USD);
-$money3 = Money::fromFloat(7.89, Currency::USD);
+$money1 = Money::fromFloat(1.23, Currency::fromName('USD'));
+$money2 = Money::fromFloat(4.56, Currency::fromName('USD'));
+$money3 = Money::fromFloat(7.89, Currency::fromName('USD'));
 $collection = MoneyCollection::from($money1, $money2, $money3);
 $money = $collection->getAverage(); // $4.23 USD
 ```

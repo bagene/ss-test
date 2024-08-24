@@ -21,10 +21,10 @@ final class OrderControllerTest extends TestCase
                     'product_name' => 'Product 1',
                     'quantity' => 1,
                     'price' => 100,
-                    'currency' => 45,
+                    'currency' => 'EUR',
                 ],
             ],
-            'currency' => 45,
+            'currency' => 'EUR',
         ]);
 
         $response->assertStatus(200);
@@ -70,12 +70,12 @@ final class OrderControllerTest extends TestCase
                 [
                     'reference' => 1,
                     'items' => 'invalid',
-                    'currency' => 'invalid',
+                    'currency' => 1,
                 ],
                 [
                     'reference' => 'The reference field must be a string.',
                     'items' => 'The items field must be an array.',
-                    'currency' => 'The currency field must be an integer.',
+                    'currency' => 'The currency field must be a string.',
                 ],
             ],
             'invalid_items' => [
@@ -86,14 +86,14 @@ final class OrderControllerTest extends TestCase
                             'product_name' => 1,
                             'quantity' => 1,
                             'price' => 100,
-                            'currency' => 'EUR',
+                            'currency' => 1,
                         ],
                     ],
-                    'currency' => 45,
+                    'currency' => 'EUR',
                 ],
                 [
                     'items.0.product_name' => 'The items.0.product_name field must be a string.',
-                    'items.0.currency' => 'The items.0.currency field must be an integer.',
+                    'items.0.currency' => 'The items.0.currency field must be a string.',
                 ],
             ]
         ];

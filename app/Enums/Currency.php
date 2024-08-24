@@ -169,6 +169,17 @@ enum Currency: int
     case ZWD = 163;
     case ZWL = 164;
 
+    public static function fromName(string $name): ?static
+    {
+        foreach(Currency::cases() as $enum){
+            if($enum->name === $name){
+                return $enum;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * The number of decimals this currency supports.
      */

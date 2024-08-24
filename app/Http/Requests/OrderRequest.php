@@ -27,11 +27,11 @@ class OrderRequest extends FormRequest
             'items.*.product_name' => 'required|string',
             'items.*.quantity' => 'required|integer',
             'items.*.price' => 'required|numeric',
-            'items.*.currency' => 'required|int',
+            'items.*.currency' => 'required|string',
             'items.*.discount' => 'numeric',
             'discount' => 'numeric',
             'discount_type' => 'string',
-            'currency' => 'required|int',
+            'currency' => 'required|string',
         ];
     }
 }

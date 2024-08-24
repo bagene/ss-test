@@ -19,11 +19,11 @@ final class OrderController extends Controller
          *       product_name: string,
          *       quantity: int,
          *       price: float,
-         *       currency: int,
+         *       currency: string,
          *       discount?: float
          *     }[],
          *     discount?: float,
-         *     currency: int
+         *     currency: string
          * } $data
          */
         $data = $request->validated();

@@ -93,16 +93,25 @@ final class MoneyTest extends TestCase
 
     public function testMultiply(): void
     {
+        $money = Money::fromInt(100, Currency::EUR);
+        $result = $money->multiply(2);
+
+        $this->assertEquals(20000, $result->getAmount());
+        $this->assertEquals(Currency::EUR, $result->getCurrency());
+    }
+
+    public function testMultiplyByMoney(): void
+    {
         $money1 = Money::fromInt(100, Currency::EUR);
         $money2 = Money::fromInt(2, Currency::EUR);
-        $result = $money1->multiply($money2);
+        $result = $money1->multiplyByMoney($money2);
 
         $this->assertEquals(20000, $result->getAmount());
         $this->assertEquals(Currency::EUR, $result->getCurrency());
 
         // test with different currencies
         $money2->convertTo(Currency::AMD);
-        $result = $money1->multiply($money2);
+        $result = $money1->multiplyByMoney($money2);
 
         $this->assertEquals(20000, $result->getAmount());
         $this->assertEquals(Currency::EUR, $result->getCurrency());
@@ -132,5 +141,12 @@ final class MoneyTest extends TestCase
 
         $this->assertEquals(10000, $result->getAmount());
         $this->assertEquals(Currency::EUR, $result->getCurrency());
+    }
+
+    public function testToString(): void
+    {
+            $money = Money::fromInt(100, Currency::EUR);
+
+        $this->assertEquals('€100.00', $money->toString());
     }
 }

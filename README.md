@@ -1,66 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Money Object Test
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a test of the Money object. The Money object is a simple object that represents a monetary value. It has a value and a currency. The value is a decimal number and the currency is a string. The Money object has a method that allows you to convert the value to a different currency.
 
-## About Laravel
+### Directory
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- app
+  - Money
+    - Money.php
+    - Conversion.php
+    - MoneyCollection.php
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Money Object
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The Money class uses minor units for value. This means that the value is stored as an integer and the decimal point is implied. For example, $1.23 would be stored as 123. This is done to avoid floating point rounding errors.
 
-## Learning Laravel
+#### Named Constructors
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+To avoid issues with minor units when creating a Money object, named constructor are used instead of the normal constructor.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* `Money::fromFloat(float $value, string $currency): Money` - Creates a Money object from a float value.
+```php
+$money = Money::fromFloat(1.23, 'USD'); // $1.23 USD
+```
+* `Money::fromInt(int $value, string $currency, bool $toMinorUnits = true): Money` - Creates a Money object from a int value. Automatically convert to minor units.
+```php
+$money = Money::fromInt(1000, 'USD'); // $10.00 USD
+$money = Money::fromInt(1000, 'USD', false); // $1000.00 USD
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Getters
 
-## Laravel Sponsors
+* `getValue(): int` - Get the value of the Money object in minor units.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$value = $money->getValue(); // 123
+```
+* `getFloatValue(): float` - Get the value of the Money object as a float.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$value = $money->getFloatValue(); // 1.23
+```
+* `toString(): string` - Get the value of the Money object as a formatted string.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$value = $money->toString(); // $1.23
+```
+* `getCurrency(): Currency` - Get the currency of the Money object.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Operators
 
-### Premium Partners
+These operators allow you to perform basic arithmetic operations on Money objects. Using it with multiple currencies automatically convert it to the primary currency before performing the operation.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+* `convertTo(string $currency): Money` - Convert the Money object to a different currency.
+```php
+$money = Money::fromFloat(1.0861, 'AMD');
+$money = $money->convertTo('EUR'); // €1.00 EUR
+```
+* `add(Money $money): Money` - Add two Money objects together.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(4.56, 'USD');
+$money3 = $money1->add($money2); // $5.79 USD
+```
+* `subtract(Money $money): Money` - Subtract one Money object from another.
+```php
+$money1 = Money::fromFloat(5.79, 'USD');
+$money2 = Money::fromFloat(4.56, 'USD');
+$money3 = $money1->subtract($money2); // $1.23 USD
+```
+* `multiply(float $value): Money` - Multiply the Money object by a float value.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$money = $money->multiply(2); // $2.46 USD
+```
+* `multiplyByMoney(Money $money): Money` - Multiply the Money object by another Money object.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(2, 'USD');
+$money3 = $money1->multiplyByMoney($money2); // $2.46 USD
+```
+* `divide(float $value): Money` - Divide the Money object by a float value.
+```php
+$money = Money::fromFloat(1.23, 'USD');
+$money = $money->divide(2); // $0.615 USD
+```
+* `divideByMoney(Money $money): Money` - Divide the Money object by another Money object.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(2, 'USD');
+$money3 = $money1->divideByMoney($money2); // $0.615 USD
+```
 
-## Contributing
+### Money Collection
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The MoneyCollection class is a collection of Money objects. It has a method that allows you to average the values of all the Money objects in the collection.
 
-## Code of Conduct
+#### Getters
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* `getMoneys(): array` - Get the Money objects in the collection.
+* `count(): int` - Get the number of Money objects in the collection.
 
-## Security Vulnerabilities
+#### Methods
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* `getLowest(): Money` - Get the Money object with the lowest value in the collection.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(4.56, 'USD');
+$money3 = Money::fromFloat(7.89, 'USD');
+$collection = MoneyCollection::from($money1, $money2, $money3);
+$money = $collection->getLowest(); // $1.23 USD
+```
+* `getHighest(): Money` - Get the Money object with the highest value in the collection.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(4.56, 'USD');
+$money3 = Money::fromFloat(7.89, 'USD');
+$collection = MoneyCollection::from($money1, $money2, $money3);
+$money = $collection->getHighest(); // $7.89 USD
+```
+* `getAverage(): Money` - Get the average value of all the Money objects in the collection.
+```php
+$money1 = Money::fromFloat(1.23, 'USD');
+$money2 = Money::fromFloat(4.56, 'USD');
+$money3 = Money::fromFloat(7.89, 'USD');
+$collection = MoneyCollection::from($money1, $money2, $money3);
+$money = $collection->getAverage(); // $4.23 USD
+```

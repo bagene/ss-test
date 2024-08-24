@@ -369,7 +369,6 @@ enum Currency: int
             self::ZMW => 'ZK',
             self::ZWD => 'Z$',
             self::ZWL => '$',
-            default => null,
         };
     }
 }

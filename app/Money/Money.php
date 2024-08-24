@@ -78,7 +78,16 @@ final class Money
         );
     }
 
-    public function multiply(Money $money): Money
+    public function multiply(int|float $value): Money
+    {
+        return Money::fromInt(
+            (int) ($this->amount * $value),
+            $this->currency,
+            false,
+        );
+    }
+
+    public function multiplyByMoney(Money $money): Money
     {
         $this->checkAndConvert($money);
 
@@ -117,5 +126,10 @@ final class Money
     public function getCurrency(): Currency
     {
         return $this->currency;
+    }
+
+    public function toString(): string
+    {
+        return $this->currency->symbol() . number_format($this->getFloatValue(), 2);
     }
 }

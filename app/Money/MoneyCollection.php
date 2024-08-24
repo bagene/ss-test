@@ -8,6 +8,9 @@ use App\Enums\Currency;
 
 final class MoneyCollection
 {
+    /**
+     * @param Money[] $moneys
+     */
     public function __construct(
         private readonly array $moneys = [],
     ) {
@@ -18,6 +21,9 @@ final class MoneyCollection
         return new MoneyCollection($moneys);
     }
 
+    /**
+     * @return Money[]
+     */
     public function getMoneys(): array
     {
         return $this->moneys;
@@ -28,11 +34,17 @@ final class MoneyCollection
         return count($this->moneys);
     }
 
+    /**
+     * @return Money[]
+     */
     private function convertAllToEuro(): array
     {
         return array_map(fn (Money $money) => $money->convertTo(Currency::EUR), $this->moneys);
     }
 
+    /**
+     * @return float[]
+     */
     private function getEuroValueInFloat(): array
     {
         return array_map(fn (Money $money) => $money->getFloatValue(), $this->convertAllToEuro());
